@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+@SuppressWarnings("null")
 public class ContextPluginsTest {
     
     private static final String CONFIG_NAME = "testConfig";
