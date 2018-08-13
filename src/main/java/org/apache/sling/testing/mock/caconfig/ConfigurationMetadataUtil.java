@@ -40,6 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.caconfig.annotation.Configuration;
 import org.apache.sling.testing.mock.osgi.ManifestScanner;
 import org.apache.sling.testing.mock.osgi.MockOsgi;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -51,10 +52,11 @@ import org.reflections.Reflections;
 /**
  * Helper methods for registering Configuration annotation classes from the classpath.
  */
+@SuppressWarnings("null")
 final class ConfigurationMetadataUtil {
     
-    private static final String[] CONFIGURATION_CLASSES_FROM_MANIFEST;
-    private static final ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES = new ConcurrentHashMap<String, List<Class>>();
+    private static final @NotNull String @NotNull [] CONFIGURATION_CLASSES_FROM_MANIFEST;
+    private static final @NotNull ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES = new ConcurrentHashMap<String, List<Class>>();
         
     static {
         // suppress log entries from Reflections library
@@ -77,7 +79,7 @@ final class ConfigurationMetadataUtil {
      * @param bundleContext Bundle context
      * @param classNames Java class names
      */
-    public static void registerAnnotationClasses(BundleContext bundleContext, String... classNames) {
+    public static void registerAnnotationClasses(@NotNull BundleContext bundleContext, @NotNull String @NotNull ... classNames) {
         Bundle bundle = new RegisterConfigurationMetadataBundle(bundleContext, Bundle.ACTIVE, classNames);
         BundleEvent event = new BundleEvent(BundleEvent.STARTED, bundle);
         MockOsgi.sendBundleEvent(bundleContext, event);
@@ -88,7 +90,7 @@ final class ConfigurationMetadataUtil {
      * @param bundleContext Bundle context
      * @param classNames Java class names
      */
-    public static void registerAnnotationClasses(BundleContext bundleContext, Class... classes) {
+    public static void registerAnnotationClasses(@NotNull BundleContext bundleContext, @NotNull Class @NotNull ... classes) {
         String[] classNames = new String[classes.length];
         for (int i = 0; i < classes.length; i++) {
             classNames[i] = classes[i].getName();
@@ -111,7 +113,7 @@ final class ConfigurationMetadataUtil {
      * @param packageNames Package names
      * @return List of classes
      */
-    public static Collection<Class> getConfigurationClassesForPackages(String packageNames) {
+    public static Collection<Class> getConfigurationClassesForPackages(@NotNull String packageNames) {
         List<Class> classes = CONFIGURATION_CLASSES_FOR_PACKAGES.get(packageNames);
         if (classes == null) {
             classes = new ArrayList<Class>();

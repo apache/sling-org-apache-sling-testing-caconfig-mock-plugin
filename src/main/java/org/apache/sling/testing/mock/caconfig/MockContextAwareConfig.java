@@ -31,6 +31,7 @@ import org.apache.sling.caconfig.spi.ConfigurationCollectionPersistData;
 import org.apache.sling.caconfig.spi.ConfigurationPersistData;
 import org.apache.sling.testing.mock.osgi.MapUtil;
 import org.apache.sling.testing.mock.sling.context.SlingContextImpl;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -48,7 +49,7 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param classNames Java class names
      */
-    public static void registerAnnotationClasses(SlingContextImpl context, String... classNames) {
+    public static void registerAnnotationClasses(@NotNull SlingContextImpl context, @NotNull String @NotNull ... classNames) {
         ConfigurationMetadataUtil.registerAnnotationClasses(context.bundleContext(), classNames);
     }
 
@@ -57,7 +58,7 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param classes Java classes
      */
-    public static void registerAnnotationClasses(SlingContextImpl context, Class... classes) {
+    public static void registerAnnotationClasses(@NotNull SlingContextImpl context, @NotNull Class @NotNull ... classes) {
         ConfigurationMetadataUtil.registerAnnotationClasses(context.bundleContext(), classes);
     }
 
@@ -66,7 +67,8 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param packageNames Java package names
      */
-    public static void registerAnnotationPackages(SlingContextImpl context, String... packageNames) {
+    @SuppressWarnings("null")
+    public static void registerAnnotationPackages(@NotNull SlingContextImpl context, @NotNull String @NotNull ... packageNames) {
         Collection<Class> classes = ConfigurationMetadataUtil.getConfigurationClassesForPackages(StringUtils.join(packageNames, ","));
         registerAnnotationClasses(context, classes.toArray(new Class[classes.size()]));
     }
@@ -79,8 +81,8 @@ public final class MockContextAwareConfig {
      * @param configClass Configuration class
      * @param values Configuration values
      */
-    public static void writeConfiguration(SlingContextImpl context, String contextPath, Class<?> configClass,
-            Map<String, Object> values) {
+    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull Class<?> configClass,
+            @NotNull Map<String, Object> values) {
         writeConfiguration(context, contextPath, getConfigurationName(configClass), values);
     }
     
@@ -92,8 +94,9 @@ public final class MockContextAwareConfig {
      * @param configName Config name
      * @param values Configuration values
      */
-    public static void writeConfiguration(SlingContextImpl context, String contextPath, String configName,
-            Map<String, Object> values) {
+    @SuppressWarnings("null")
+    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName,
+            @NotNull Map<String, Object> values) {
         ConfigurationManager configManager = context.getService(ConfigurationManager.class);
         Resource contextResource = context.resourceResolver().getResource(contextPath);
         configManager.persistConfiguration(contextResource, configName, new ConfigurationPersistData(values));
@@ -107,7 +110,7 @@ public final class MockContextAwareConfig {
      * @param configClass Configuration class
      * @param values Configuration values
      */
-    public static void writeConfiguration(SlingContextImpl context, String contextPath, Class<?> configClass, Object... values) {
+    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, Class<?> configClass, @NotNull Object @NotNull ... values) {
         writeConfiguration(context, contextPath, getConfigurationName(configClass), values);
     }
 
@@ -119,7 +122,7 @@ public final class MockContextAwareConfig {
      * @param configName Config name
      * @param values Configuration values
      */
-    public static void writeConfiguration(SlingContextImpl context, String contextPath, String configName, Object... values) {
+    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName, @NotNull Object @NotNull ... values) {
         writeConfiguration(context, contextPath, configName, MapUtil.toMap(values));
     }
 
@@ -131,8 +134,8 @@ public final class MockContextAwareConfig {
      * @param configClass Configuration class
      * @param values Configuration values
      */
-    public static void writeConfigurationCollection(SlingContextImpl context, String contextPath,  Class<?> configClass,
-            Collection<Map<String, Object>> values) {
+    public static void writeConfigurationCollection(@NotNull SlingContextImpl context, @NotNull String contextPath,  @NotNull Class<?> configClass,
+            @NotNull Collection<@NotNull Map<String, Object>> values) {
         writeConfigurationCollection(context, contextPath, getConfigurationName(configClass), values);
     }
     
@@ -144,10 +147,14 @@ public final class MockContextAwareConfig {
      * @param configName Config name
      * @param values Configuration values
      */
-    public static void writeConfigurationCollection(SlingContextImpl context, String contextPath, String configName,
-            Collection<Map<String, Object>> values) {
+    @SuppressWarnings("null")
+    public static void writeConfigurationCollection(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName,
+            @NotNull Collection<@NotNull Map<String, Object>> values) {
         ConfigurationManager configManager = context.getService(ConfigurationManager.class);
         Resource contextResource = context.resourceResolver().getResource(contextPath);
+        if (contextResource == null) {
+            throw new IllegalArgumentException("No resource found at" + contextPath);
+        }
         List<ConfigurationPersistData> items = new ArrayList<>();
         int index = 0;
         for (Map<String, Object> map : values) {
@@ -157,7 +164,8 @@ public final class MockContextAwareConfig {
                 new ConfigurationCollectionPersistData(items));
     }
     
-    private static String getConfigurationName(Class<?> configClass) {
+    @SuppressWarnings("null")
+    private static @NotNull String getConfigurationName(Class<?> configClass) {
         Configuration annotation = configClass.getAnnotation(Configuration.class);
         if (annotation != null && StringUtils.isNotBlank(annotation.name())) {
             return annotation.name();

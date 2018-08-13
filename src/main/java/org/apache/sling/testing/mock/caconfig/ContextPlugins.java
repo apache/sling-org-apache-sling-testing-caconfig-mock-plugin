@@ -30,6 +30,7 @@ import org.apache.sling.caconfig.resource.impl.def.DefaultContextPathStrategy;
 import org.apache.sling.testing.mock.osgi.context.AbstractContextPlugin;
 import org.apache.sling.testing.mock.osgi.context.ContextPlugin;
 import org.apache.sling.testing.mock.sling.context.SlingContextImpl;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -46,9 +47,9 @@ public final class ContextPlugins {
     /**
      * Context plugin for Sling Context-Aware Configuration.
      */
-    public static final ContextPlugin<? extends SlingContextImpl> CACONFIG = new AbstractContextPlugin<SlingContextImpl>() {
+    public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG = new AbstractContextPlugin<SlingContextImpl>() {
         @Override
-        public void afterSetUp(SlingContextImpl context) throws Exception {
+        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
@@ -63,9 +64,9 @@ public final class ContextPlugins {
     /**
      * Context plugin for Sling Context-Aware Configuration (without the default implementations).
      */
-    public static final ContextPlugin<? extends SlingContextImpl> CACONFIG_NODEF = new AbstractContextPlugin<SlingContextImpl>() {
+    public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG_NODEF = new AbstractContextPlugin<SlingContextImpl>() {
         @Override
-        public void afterSetUp(SlingContextImpl context) throws Exception {
+        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
@@ -147,6 +148,7 @@ public final class ContextPlugins {
         context.registerInjectActivateService(new AnnotationClassConfigurationMetadataProvider());
     }
 
+    @SuppressWarnings("null")
     private static boolean registerByClassName(SlingContextImpl context, String className) {
         try {
             Class<?> clazz = Class.forName(className);
