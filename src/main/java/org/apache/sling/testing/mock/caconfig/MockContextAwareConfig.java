@@ -67,7 +67,6 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param packageNames Java package names
      */
-    @SuppressWarnings("null")
     public static void registerAnnotationPackages(@NotNull SlingContextImpl context, @NotNull String @NotNull ... packageNames) {
         Collection<Class> classes = ConfigurationMetadataUtil.getConfigurationClassesForPackages(StringUtils.join(packageNames, ","));
         registerAnnotationClasses(context, classes.toArray(new Class[classes.size()]));
