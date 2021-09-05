@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.caconfig.ConfigurationBuilder;
@@ -58,9 +57,9 @@ public class MockContextAwareConfigTest {
         MockContextAwareConfig.writeConfiguration(context, "/content/region/site", SimpleConfig.class,
                 "stringParam", "value1");
 
-        MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", ListConfig.class,
-                ImmutableList.of((Map<String, Object>) ImmutableMap.<String, Object> of("stringParam", "value1"),
-                        (Map<String, Object>) ImmutableMap.<String, Object> of("stringParam", "value2")));
+        MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", ListConfig.class, ImmutableList.of(
+                ImmutableMap.<String,Object>of("stringParam", "value1"),
+                ImmutableMap.<String,Object>of("stringParam", "value2")));
     }
 
     @Test
