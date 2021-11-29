@@ -59,9 +59,6 @@ final class ConfigurationMetadataUtil {
     private static final @NotNull ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES = new ConcurrentHashMap<>();
 
     static {
-        // suppress log entries from Reflections library
-        Reflections.log = null;
-
         // scan classpath for configuration classes bundle header entries only once
         CONFIGURATION_CLASSES_FROM_MANIFEST = toArray(ManifestScanner.getValues(CONFIGURATION_CLASSES_HEADER));
     }
