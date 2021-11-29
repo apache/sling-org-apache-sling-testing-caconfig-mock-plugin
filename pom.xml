@@ -95,14 +95,14 @@
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.testing.sling-mock.core</artifactId>
-            <version>3.2.0</version>
+            <version>3.2.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.sling</groupId>
             <artifactId>org.apache.sling.testing.sling-mock.junit4</artifactId>
-            <version>3.2.0</version>
+            <version>3.2.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
