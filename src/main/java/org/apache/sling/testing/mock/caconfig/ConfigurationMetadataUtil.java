@@ -54,14 +54,14 @@ import org.reflections.Reflections;
  */
 @SuppressWarnings("null")
 final class ConfigurationMetadataUtil {
-    
+
     private static final @NotNull String @NotNull [] CONFIGURATION_CLASSES_FROM_MANIFEST;
-    private static final @NotNull ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES = new ConcurrentHashMap<String, List<Class>>();
-        
+    private static final @NotNull ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES = new ConcurrentHashMap<>();
+
     static {
         // suppress log entries from Reflections library
         Reflections.log = null;
-        
+
         // scan classpath for configuration classes bundle header entries only once
         CONFIGURATION_CLASSES_FROM_MANIFEST = toArray(ManifestScanner.getValues(CONFIGURATION_CLASSES_HEADER));
     }
@@ -97,7 +97,7 @@ final class ConfigurationMetadataUtil {
         }
         registerAnnotationClasses(bundleContext, classNames);
     }
-    
+
     /**
      * Scan MANIFEST.MF in the classpath and automatically register all Configuration annotation classes found.
      * @param bundleContext Bundle context
@@ -107,7 +107,7 @@ final class ConfigurationMetadataUtil {
             registerAnnotationClasses(bundleContext, CONFIGURATION_CLASSES_FROM_MANIFEST);
         }
     }
-    
+
     /**
      * Get configuration classes in list of packages (and subpackages), and cache result in static map.
      * @param packageNames Package names
@@ -129,10 +129,10 @@ final class ConfigurationMetadataUtil {
         }
         return classes;
     }
-    
-    
+
+
     private static class RegisterConfigurationMetadataBundle implements Bundle {
-        
+
         private final BundleContext bundleContext;
         private final int state;
         private final String classNames;
@@ -142,7 +142,7 @@ final class ConfigurationMetadataUtil {
             this.state = state;
             this.classNames = normalizeValueList(classNames);
         }
-        
+
         private String normalizeValueList(String[] values) {
             if (values == null || values.length == 0) {
                 return null;
@@ -157,7 +157,7 @@ final class ConfigurationMetadataUtil {
 
         @Override
         public Dictionary<String,String> getHeaders() {
-            Dictionary<String, String> headers = new Hashtable<String, String>();
+            Dictionary<String, String> headers = new Hashtable<>();
             headers.put(CONFIGURATION_CLASSES_HEADER, classNames);
             return headers;
         }
@@ -166,7 +166,7 @@ final class ConfigurationMetadataUtil {
         public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
             return new Vector<URL>().elements();
         }
-        
+
         @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             return getClass().getClassLoader().loadClass(name);
@@ -296,7 +296,7 @@ final class ConfigurationMetadataUtil {
         public File getDataFile(String filename) {
             return null;
         }
-        
+
     }
 
 }
