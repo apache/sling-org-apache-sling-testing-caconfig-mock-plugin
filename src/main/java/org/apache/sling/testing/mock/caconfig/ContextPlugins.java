@@ -129,7 +129,7 @@ public final class ContextPlugins {
         }
 
         // required for impl 1.6
-        registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationBindingsResourceDetectionStrategyMultiplexerImpl");
+        registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInjectResourceDetectionStrategyMultiplexerImpl");
 
         context.registerInjectActivateService(new ConfigurationResolverImpl());
         context.registerInjectActivateService(new ConfigurationBuilderAdapterFactory());
