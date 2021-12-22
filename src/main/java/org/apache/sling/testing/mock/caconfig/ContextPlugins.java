@@ -128,6 +128,9 @@ public final class ContextPlugins {
             registerByClassName(context, "org.apache.sling.caconfig.impl.override.ConfigurationOverrideManager");
         }
 
+        // required for impl 1.6
+        registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationBindingsResourceDetectionStrategyMultiplexerImpl");
+
         context.registerInjectActivateService(new ConfigurationResolverImpl());
         context.registerInjectActivateService(new ConfigurationBuilderAdapterFactory());
     }
