@@ -49,13 +49,10 @@ public final class ContextPlugins {
      */
     public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG = new AbstractContextPlugin<SlingContextImpl>() {
         @Override
-        public void beforeSetUp(@NotNull SlingContextImpl context) throws Exception {
+        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
-        }
-        @Override
-        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
             registerConfigurationResourceResolverDefaultImpl(context);
             registerConfigurationResolverDefaultImpl(context);
 
@@ -69,7 +66,7 @@ public final class ContextPlugins {
      */
     public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG_NODEF = new AbstractContextPlugin<SlingContextImpl>() {
         @Override
-        public void beforeSetUp(@NotNull SlingContextImpl context) throws Exception {
+        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
@@ -147,7 +144,7 @@ public final class ContextPlugins {
 
         // required for impl 1.6+
         registerByClassName(context, "org.apache.sling.caconfig.impl.def.DefaultConfigurationInjectResourceDetectionStrategy");
-}
+    }
 
     private static void registerConfigurationManagement(SlingContextImpl context) {
         context.registerInjectActivateService(new ConfigurationManagerImpl());
