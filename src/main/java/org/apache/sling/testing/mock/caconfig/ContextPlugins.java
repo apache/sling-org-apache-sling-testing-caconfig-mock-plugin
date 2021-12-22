@@ -78,14 +78,14 @@ public final class ContextPlugins {
      * @param context Sling context
      */
     private static void registerConfigurationResourceResolver(SlingContextImpl context) {
-        
+
         context.registerInjectActivateService(new ContextPathStrategyMultiplexerImpl());
-        
+
         if (!registerByClassName(context, "org.apache.sling.caconfig.resource.impl.ConfigurationResourceResolvingStrategyMultiplexerImpl")) {
             // fallback to impl 1.2
             registerByClassName(context, "org.apache.sling.caconfig.resource.impl.ConfigurationResourceResolvingStrategyMultiplexer");
         }
-        
+
         context.registerInjectActivateService(new ConfigurationResourceResolverImpl());
     }
 
@@ -104,12 +104,12 @@ public final class ContextPlugins {
      */
     private static void registerConfigurationResolver(SlingContextImpl context) {
         registerByClassName(context, "org.apache.sling.caconfig.management.impl.ConfigurationManagementSettingsImpl");
-        
+
         if (!registerByClassName(context, "org.apache.sling.caconfig.management.impl.ConfigurationPersistenceStrategyMultiplexerImpl")) {
             // fallback to impl 1.2
             registerByClassName(context, "org.apache.sling.caconfig.management.impl.ConfigurationPersistenceStrategyMultiplexer");
         }
-        
+
         // only required for impl 1.3+
         registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationPersistenceStrategyBridge");
 
@@ -117,12 +117,12 @@ public final class ContextPlugins {
             // fallback to impl 1.2
             registerByClassName(context, "org.apache.sling.caconfig.impl.metadata.ConfigurationMetadataProviderMultiplexer");
         }
-        
+
         if (!registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInheritanceStrategyMultiplexerImpl")) {
             // fallback to impl 1.2 (not existing in 1.1 or below)
             registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInheritanceStrategyMultiplexer");
         }
-        
+
         if (!registerByClassName(context, "org.apache.sling.caconfig.impl.override.ConfigurationOverrideMultiplexerImpl")) {
             // fallback to impl 1.2 (not existing in 1.1 or below)
             registerByClassName(context, "org.apache.sling.caconfig.impl.override.ConfigurationOverrideManager");

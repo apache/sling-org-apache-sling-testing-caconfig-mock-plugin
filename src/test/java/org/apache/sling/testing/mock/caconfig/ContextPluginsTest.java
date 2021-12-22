@@ -34,31 +34,31 @@ import org.junit.Test;
 
 @SuppressWarnings("null")
 public class ContextPluginsTest {
-    
+
     private static final String CONFIG_NAME = "testConfig";
-    
+
     @Rule
     public SlingContext context = new SlingContextBuilder()
             .plugin(CACONFIG)
             .build();
-    
+
     private Resource contextResource;
 
     @Before
     public void setUp() {
         context.create().resource("/content/site1", "sling:configRef", "/conf/site1");
         contextResource = context.create().resource("/content/site1/page1");
-        
+
         // register configuration annotation class
         MockContextAwareConfig.registerAnnotationClasses(context, SimpleConfig.class);
 
         // write config
-        MockContextAwareConfig.writeConfiguration(context, contextResource.getPath(), SimpleConfig.class, 
+        MockContextAwareConfig.writeConfiguration(context, contextResource.getPath(), SimpleConfig.class,
                         "stringParam", "value1",
                         "intParam", 123,
                         "boolParam", true);
     }
-    
+
     @Test
     public void testValueMap() {
         // read config

@@ -39,7 +39,7 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public final class MockContextAwareConfig {
-    
+
     private MockContextAwareConfig() {
         // static methods only
     }
@@ -84,7 +84,7 @@ public final class MockContextAwareConfig {
             @NotNull Map<String, Object> values) {
         writeConfiguration(context, contextPath, getConfigurationName(configClass), values);
     }
-    
+
     /**
      * Writes configuration parameters using the primary configured persistence
      * provider.
@@ -137,7 +137,7 @@ public final class MockContextAwareConfig {
             @NotNull Collection<@NotNull Map<String, Object>> values) {
         writeConfigurationCollection(context, contextPath, getConfigurationName(configClass), values);
     }
-    
+
     /**
      * Writes a collection of configuration parameters using the primary
      * configured persistence provider.
@@ -162,7 +162,7 @@ public final class MockContextAwareConfig {
         configManager.persistConfigurationCollection(contextResource, configName,
                 new ConfigurationCollectionPersistData(items));
     }
-    
+
     @SuppressWarnings("null")
     private static @NotNull String getConfigurationName(Class<?> configClass) {
         Configuration annotation = configClass.getAnnotation(Configuration.class);

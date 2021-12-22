@@ -24,9 +24,9 @@ import org.apache.sling.caconfig.annotation.Configuration;
 public @interface SimpleConfig {
 
     String stringParam();
-    
+
     int intParam() default 5;
-    
+
     boolean boolParam();
-    
+
 }
