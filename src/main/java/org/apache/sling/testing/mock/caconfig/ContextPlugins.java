@@ -141,11 +141,17 @@ public final class ContextPlugins {
 
         // only required for impl 1.2+
         registerByClassName(context,"org.apache.sling.caconfig.impl.def.DefaultConfigurationInheritanceStrategy");
+
+        // required for impl 1.6+
+        registerByClassName(context, "org.apache.sling.caconfig.impl.def.DefaultConfigurationInjectResourceDetectionStrategy");
     }
 
     private static void registerConfigurationManagement(SlingContextImpl context) {
         context.registerInjectActivateService(new ConfigurationManagerImpl());
         context.registerInjectActivateService(new AnnotationClassConfigurationMetadataProvider());
+
+        // required for impl 1.6
+        registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInjectResourceDetectionStrategyMultiplexerImpl");
     }
 
     @SuppressWarnings("null")
