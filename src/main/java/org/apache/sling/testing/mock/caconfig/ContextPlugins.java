@@ -53,6 +53,7 @@ public final class ContextPlugins {
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
+            registerModelsInjector(context);
             registerConfigurationResourceResolverDefaultImpl(context);
             registerConfigurationResolverDefaultImpl(context);
 
@@ -70,6 +71,7 @@ public final class ContextPlugins {
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
+            registerModelsInjector(context);
         }
     };
 
@@ -152,6 +154,11 @@ public final class ContextPlugins {
 
         // required for impl 1.6
         registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInjectResourceDetectionStrategyMultiplexerImpl");
+    }
+
+    private static void registerModelsInjector(SlingContextImpl context) {
+        // required for impl 1.6
+        registerByClassName(context, "org.apache.sling.models.caconfig.impl.injectors.ContextAwareConfigurationInjector");
     }
 
     @SuppressWarnings("null")
