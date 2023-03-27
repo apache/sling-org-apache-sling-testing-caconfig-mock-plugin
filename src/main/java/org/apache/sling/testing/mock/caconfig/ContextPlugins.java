@@ -49,11 +49,16 @@ public final class ContextPlugins {
      */
     public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG = new AbstractContextPlugin<SlingContextImpl>() {
         @Override
-        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
+        public void beforeSetUp(@NotNull SlingContextImpl context) throws Exception {
+            // register models injector and it's dependencies before setup, to ensure it is present
+            // before sling models are auto-detected from classpath
             registerConfigurationResourceResolver(context);
             registerConfigurationResolver(context);
             registerConfigurationManagement(context);
             registerModelsInjector(context);
+        }
+        @Override
+        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
             registerConfigurationResourceResolverDefaultImpl(context);
             registerConfigurationResolverDefaultImpl(context);
 
