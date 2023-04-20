@@ -18,17 +18,11 @@
  */
 package org.apache.sling.testing.mock.caconfig;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.caconfig.annotation.Configuration;
-import org.apache.sling.caconfig.management.ConfigurationManager;
-import org.apache.sling.caconfig.spi.ConfigurationCollectionPersistData;
-import org.apache.sling.caconfig.spi.ConfigurationPersistData;
 import org.apache.sling.testing.mock.osgi.MapUtil;
 import org.apache.sling.testing.mock.sling.context.SlingContextImpl;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +70,7 @@ public final class MockContextAwareConfig {
      * Writes configuration parameters using the primary configured persistence
      * provider.
      * @param context Sling context
-     * @param contextPath Configuration id
+     * @param contextPath Context path
      * @param configClass Configuration class
      * @param values Configuration values
      */
@@ -89,23 +83,21 @@ public final class MockContextAwareConfig {
      * Writes configuration parameters using the primary configured persistence
      * provider.
      * @param context Sling context
-     * @param contextPath Configuration id
+     * @param contextPath Context path
      * @param configName Config name
      * @param values Configuration values
      */
-    @SuppressWarnings("null")
     public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName,
             @NotNull Map<String, Object> values) {
-        ConfigurationManager configManager = context.getService(ConfigurationManager.class);
-        Resource contextResource = context.resourceResolver().getResource(contextPath);
-        configManager.persistConfiguration(contextResource, configName, new ConfigurationPersistData(values));
+        ConfigurationPersistHelper helper = new ConfigurationPersistHelper(context, contextPath);
+        helper.writeConfiguration(configName, values);
     }
 
     /**
      * Writes configuration parameters using the primary configured persistence
      * provider.
      * @param context Sling context
-     * @param contextPath Configuration id
+     * @param contextPath Context path
      * @param configClass Configuration class
      * @param values Configuration values
      */
@@ -117,7 +109,7 @@ public final class MockContextAwareConfig {
      * Writes configuration parameters using the primary configured persistence
      * provider.
      * @param context Sling context
-     * @param contextPath Configuration id
+     * @param contextPath Context path
      * @param configName Config name
      * @param values Configuration values
      */
@@ -129,7 +121,7 @@ public final class MockContextAwareConfig {
      * Writes a collection of configuration parameters using the primary
      * configured persistence provider.
      * @param context Sling context
-     * @param contextPath Configuration id
+     * @param contextPath Context path
      * @param configClass Configuration class
      * @param values Configuration values
      */
@@ -142,25 +134,14 @@ public final class MockContextAwareConfig {
      * Writes a collection of configuration parameters using the primary
      * configured persistence provider.
      * @param context Sling context
-     * @param contextPath Configuration id
+     * @param contextPath Context path
      * @param configName Config name
      * @param values Configuration values
      */
-    @SuppressWarnings("null")
     public static void writeConfigurationCollection(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName,
             @NotNull Collection<@NotNull Map<String, Object>> values) {
-        ConfigurationManager configManager = context.getService(ConfigurationManager.class);
-        Resource contextResource = context.resourceResolver().getResource(contextPath);
-        if (contextResource == null) {
-            throw new IllegalArgumentException("No resource found at" + contextPath);
-        }
-        List<ConfigurationPersistData> items = new ArrayList<>();
-        int index = 0;
-        for (Map<String, Object> map : values) {
-            items.add(new ConfigurationPersistData(map).collectionItemName("item" + (index++)));
-        }
-        configManager.persistConfigurationCollection(contextResource, configName,
-                new ConfigurationCollectionPersistData(items));
+        ConfigurationPersistHelper helper = new ConfigurationPersistHelper(context, contextPath);
+        helper.writeConfigurationCollection(configName, values);
     }
 
     @SuppressWarnings("null")

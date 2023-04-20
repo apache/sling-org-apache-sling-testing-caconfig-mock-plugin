@@ -19,6 +19,7 @@
 package org.apache.sling.testing.mock.caconfig;
 
 import static org.apache.sling.testing.mock.caconfig.ContextPlugins.CACONFIG;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,9 +29,16 @@ import java.util.Iterator;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.caconfig.ConfigurationBuilder;
 import org.apache.sling.testing.mock.caconfig.example.ListConfig;
+import org.apache.sling.testing.mock.caconfig.example.NestedConfig;
+import org.apache.sling.testing.mock.caconfig.example.NestedConfigSub;
+import org.apache.sling.testing.mock.caconfig.example.NestedConfigSub2;
+import org.apache.sling.testing.mock.caconfig.example.NestedListConfig;
 import org.apache.sling.testing.mock.caconfig.example.SimpleConfig;
+import org.apache.sling.testing.mock.sling.builder.ImmutableValueMap;
 import org.apache.sling.testing.mock.sling.junit.SlingContext;
 import org.apache.sling.testing.mock.sling.junit.SlingContextBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +46,6 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-@SuppressWarnings("null")
 public class MockContextAwareConfigTest {
 
     @Rule
@@ -53,28 +60,25 @@ public class MockContextAwareConfigTest {
         context.create().resource("/content/region/site", "sling:configRef", "/conf/region/site");
 
         context.currentResource(context.create().resource("/content/region/site/en"));
-
-        MockContextAwareConfig.writeConfiguration(context, "/content/region/site", SimpleConfig.class,
-                "stringParam", "value1");
-
-        MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", ListConfig.class, ImmutableList.of(
-                ImmutableMap.<String,Object>of("stringParam", "value1"),
-                ImmutableMap.<String,Object>of("stringParam", "value2")));
     }
 
     @Test
     public void testSingletonConfig() {
-        Resource resource = context.request().getResource();
-        SimpleConfig config = resource.adaptTo(ConfigurationBuilder.class).as(SimpleConfig.class);
-        assertNotNull(config);
+        MockContextAwareConfig.writeConfiguration(context, "/content/region/site", SimpleConfig.class,
+                "stringParam", "value1");
+
+        SimpleConfig config = getConfig(SimpleConfig.class);
         assertEquals("value1", config.stringParam());
         assertEquals(5, config.intParam());
     }
 
     @Test
-    public void testConfigCollection() {
-        Resource resource = context.request().getResource();
-        Collection<ListConfig> config = resource.adaptTo(ConfigurationBuilder.class).asCollection(ListConfig.class);
+    public void testCollectionConfig() {
+        MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", ListConfig.class, ImmutableList.of(
+                ImmutableMap.<String,Object>of("stringParam", "value1"),
+                ImmutableMap.<String,Object>of("stringParam", "value2")));
+
+        Collection<ListConfig> config = getConfigCollection(ListConfig.class);
         assertEquals(2, config.size());
         Iterator<ListConfig> items = config.iterator();
 
@@ -85,6 +89,104 @@ public class MockContextAwareConfigTest {
         ListConfig item2 = items.next();
         assertEquals("value2", item2.stringParam());
         assertEquals(5, item2.intParam());
+    }
+
+    @Test
+    public void testNestedSingletonConfig() {
+        MockContextAwareConfig.writeConfiguration(context, "/content/region/site", NestedConfig.class,
+                "stringParam", "value1",
+                "sub", ImmutableList.of(
+                        ImmutableValueMap.of("subStringParam", "v1", "intParam", 5, "stringArrayParam", new String[] {"v1a","v1b"}),
+                        ImmutableValueMap.of("subStringParam", "v2")),
+                "sub2", ImmutableValueMap.of(
+                        "sub2StringParam", "v3",
+                        "sub", ImmutableValueMap.of("subStringParam", "v4"),
+                        "subList", ImmutableList.of(ImmutableValueMap.of("subStringParam", "v5a"),ImmutableValueMap.of("subStringParam", "v5b"))),
+                "sub2List", ImmutableList.of(
+                        ImmutableValueMap.of("sub2StringParam", "v6")));
+
+        NestedConfig config = getConfig(NestedConfig.class);
+        assertEquals("value1", config.stringParam());
+
+        NestedConfigSub[] sub = config.sub();
+        assertEquals(2, sub.length);
+        assertEquals("v1", sub[0].subStringParam());
+        assertEquals(5, sub[0].intParam());
+        assertArrayEquals(new String[] {"v1a","v1b"}, sub[0].stringArrayParam());
+        assertEquals("v2", sub[1].subStringParam());
+
+        NestedConfigSub2 sub2 = config.sub2();
+        assertEquals("v3", sub2.sub2StringParam());
+        assertEquals("v4", sub2.sub().subStringParam());
+        NestedConfigSub[] sub2_sublist = sub2.subList();
+        assertEquals(2, sub2_sublist.length);
+        assertEquals("v5a", sub2_sublist[0].subStringParam());
+        assertEquals("v5b", sub2_sublist[1].subStringParam());
+
+        NestedConfigSub2[] sub2list = config.sub2List();
+        assertEquals(1, sub2list.length);
+        assertEquals("v6", sub2list[0].sub2StringParam());
+    }
+
+    @Test
+    public void testNestedCollectionConfigConfig() {
+        MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", NestedListConfig.class, ImmutableList.of(
+                ImmutableMap.<String,Object>of("stringParam", "value1",
+                        "sub", ImmutableList.of(
+                                ImmutableValueMap.of("subStringParam", "v1", "intParam", 5, "stringArrayParam", new String[] {"v1a","v1b"}),
+                                ImmutableValueMap.of("subStringParam", "v2")),
+                        "sub2", ImmutableValueMap.of(
+                                "sub2StringParam", "v3",
+                                "sub", ImmutableValueMap.of("subStringParam", "v4"),
+                                "subList", ImmutableList.of(ImmutableValueMap.of("subStringParam", "v5a"),ImmutableValueMap.of("subStringParam", "v5b"))),
+                        "sub2List", ImmutableList.of(
+                                ImmutableValueMap.of("sub2StringParam", "v6"))),
+                ImmutableMap.<String,Object>of("stringParam", "value2")));
+
+        Collection<NestedListConfig> config = getConfigCollection(NestedListConfig.class);
+        assertEquals(2, config.size());
+        Iterator<NestedListConfig> items = config.iterator();
+
+        NestedListConfig item1 = items.next();
+        assertEquals("value1", item1.stringParam());
+
+        NestedConfigSub[] sub = item1.sub();
+        assertEquals(2, sub.length);
+        assertEquals("v1", sub[0].subStringParam());
+        assertEquals(5, sub[0].intParam());
+        assertArrayEquals(new String[] {"v1a","v1b"}, sub[0].stringArrayParam());
+        assertEquals("v2", sub[1].subStringParam());
+
+        NestedConfigSub2 sub2 = item1.sub2();
+        assertEquals("v3", sub2.sub2StringParam());
+        assertEquals("v4", sub2.sub().subStringParam());
+        NestedConfigSub[] sub2_sublist = sub2.subList();
+        assertEquals(2, sub2_sublist.length);
+        assertEquals("v5a", sub2_sublist[0].subStringParam());
+        assertEquals("v5b", sub2_sublist[1].subStringParam());
+
+        NestedConfigSub2[] sub2list = item1.sub2List();
+        assertEquals(1, sub2list.length);
+        assertEquals("v6", sub2list[0].sub2StringParam());
+
+        NestedListConfig item2 = items.next();
+        assertEquals("value2", item2.stringParam());
+    }
+
+    @SuppressWarnings("null")
+    private <T> @NotNull T getConfig(@NotNull Class<T> configClass) {
+        Resource resource = context.request().getResource();
+        T result = resource.adaptTo(ConfigurationBuilder.class).as(configClass);
+        assertNotNull(result);
+        return result;
+    }
+
+    @SuppressWarnings("null")
+    private <T> @NotNull Collection<@Nullable T> getConfigCollection(@NotNull Class<T> configClass) {
+        Resource resource = context.request().getResource();
+        Collection<@Nullable T> result = resource.adaptTo(ConfigurationBuilder.class).asCollection(configClass);
+        assertNotNull(result);
+        return result;
     }
 
 }
