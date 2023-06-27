@@ -92,6 +92,30 @@ public class MockContextAwareConfigTest {
     }
 
     @Test
+    public void testCollectionConfig_DifferentOrder() {
+        MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", ListConfig.class, ImmutableList.of(
+                ImmutableMap.<String,Object>of("stringParam", "value2"),
+                ImmutableMap.<String,Object>of("stringParam", "value3"),
+                ImmutableMap.<String,Object>of("stringParam", "value1")));
+
+        Collection<ListConfig> config = getConfigCollection(ListConfig.class);
+        assertEquals(3, config.size());
+        Iterator<ListConfig> items = config.iterator();
+
+        ListConfig item1 = items.next();
+        assertEquals("value2", item1.stringParam());
+        assertEquals(5, item1.intParam());
+
+        ListConfig item2 = items.next();
+        assertEquals("value3", item2.stringParam());
+        assertEquals(5, item2.intParam());
+
+        ListConfig item3 = items.next();
+        assertEquals("value1", item3.stringParam());
+        assertEquals(5, item3.intParam());
+    }
+
+    @Test
     public void testNestedSingletonConfig() {
         MockContextAwareConfig.writeConfiguration(context, "/content/region/site", NestedConfig.class,
                 "stringParam", "value1",

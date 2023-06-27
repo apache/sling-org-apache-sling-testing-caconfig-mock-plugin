@@ -19,7 +19,7 @@
 package org.apache.sling.testing.mock.caconfig;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -81,7 +81,7 @@ class ConfigurationPersistHelper {
      */
     void writeConfigurationCollection(@NotNull String configName, @NotNull Collection<@NotNull Map<String, Object>> values) {
         // split each collection item map in it's parts
-        Map<String, ConfigurationDataParts> partsCollection = new HashMap<>();
+        Map<String, ConfigurationDataParts> partsCollection = new LinkedHashMap<>();
         int index = 0;
         for (Map<String, Object> map : values) {
             partsCollection.put("item" + (index++), new ConfigurationDataParts(map));
