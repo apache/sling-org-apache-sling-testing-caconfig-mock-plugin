@@ -151,7 +151,7 @@ public class MockContextAwareConfigTest {
     }
 
     @Test
-    public void testNestedCollectionConfigConfig() {
+    public void testNestedCollectionConfig() {
         MockContextAwareConfig.writeConfigurationCollection(context, "/content/region/site", NestedListConfig.class, List.of(
                 Map.of("stringParam", "value1",
                         "sub", List.of(

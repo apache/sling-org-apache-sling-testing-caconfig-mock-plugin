@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.caconfig.management.ConfigurationManager;
 import org.apache.sling.caconfig.management.multiplexer.ConfigurationPersistenceStrategyMultiplexer;
@@ -107,22 +108,24 @@ class ConfigurationPersistHelper {
         }
     }
 
+    private String getConfigName(@NotNull String configName) {
+        return StringUtils.defaultString(configurationPersistenceStrategy.getConfigName(configName, null), configName);
+    }
+
+    private String getCollectionParentConfigName(@NotNull String configName) {
+        return StringUtils.defaultString(configurationPersistenceStrategy.getCollectionParentConfigName(configName, null), configName);
+    }
+
+    private String getCollectionItemConfigName(@NotNull String configName) {
+        return StringUtils.defaultString(configurationPersistenceStrategy.getCollectionItemConfigName(configName, null), configName);
+    }
+
     private String getNestedConfigName(@NotNull String configName, @NotNull String key) {
-        String nestedKey = configName + "/" + key;
-        String nestedConfigName = configurationPersistenceStrategy.getConfigName(nestedKey, null);
-        if (nestedConfigName == null) {
-            throw new IllegalArgumentException("Nested configuration not supported for " + nestedKey);
-        }
-        return nestedConfigName;
+        return getConfigName(configName) + "/" + key;
     }
 
     private String getNestedCollectionItemConfigName(@NotNull String configName, @NotNull String itemName, @NotNull String key) {
-        String nestedKey = configName + "/" + itemName + "/" + key;
-        String nestedConfigName = configurationPersistenceStrategy.getCollectionItemConfigName(nestedKey, null);
-        if (nestedConfigName == null) {
-            throw new IllegalArgumentException("Nested configuration not supported for " + nestedKey);
-        }
-        return nestedConfigName;
+        return getCollectionItemConfigName(getCollectionParentConfigName(configName) + "/" + itemName) + "/" + key;
     }
 
 }
