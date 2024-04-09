@@ -43,7 +43,8 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param classNames Java class names
      */
-    public static void registerAnnotationClasses(@NotNull SlingContextImpl context, @NotNull String @NotNull ... classNames) {
+    public static void registerAnnotationClasses(
+            @NotNull SlingContextImpl context, @NotNull String @NotNull ... classNames) {
         ConfigurationMetadataUtil.registerAnnotationClasses(context.bundleContext(), classNames);
     }
 
@@ -52,7 +53,8 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param classes Java classes
      */
-    public static void registerAnnotationClasses(@NotNull SlingContextImpl context, @NotNull Class @NotNull ... classes) {
+    public static void registerAnnotationClasses(
+            @NotNull SlingContextImpl context, @NotNull Class @NotNull ... classes) {
         ConfigurationMetadataUtil.registerAnnotationClasses(context.bundleContext(), classes);
     }
 
@@ -61,8 +63,10 @@ public final class MockContextAwareConfig {
      * @param context Sling context
      * @param packageNames Java package names
      */
-    public static void registerAnnotationPackages(@NotNull SlingContextImpl context, @NotNull String @NotNull ... packageNames) {
-        Collection<Class> classes = ConfigurationMetadataUtil.getConfigurationClassesForPackages(StringUtils.join(packageNames, ","));
+    public static void registerAnnotationPackages(
+            @NotNull SlingContextImpl context, @NotNull String @NotNull ... packageNames) {
+        Collection<Class> classes =
+                ConfigurationMetadataUtil.getConfigurationClassesForPackages(StringUtils.join(packageNames, ","));
         registerAnnotationClasses(context, classes.toArray(new Class[classes.size()]));
     }
 
@@ -74,7 +78,10 @@ public final class MockContextAwareConfig {
      * @param configClass Configuration class
      * @param values Configuration values
      */
-    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull Class<?> configClass,
+    public static void writeConfiguration(
+            @NotNull SlingContextImpl context,
+            @NotNull String contextPath,
+            @NotNull Class<?> configClass,
             @NotNull Map<String, Object> values) {
         writeConfiguration(context, contextPath, getConfigurationName(configClass), values);
     }
@@ -87,7 +94,10 @@ public final class MockContextAwareConfig {
      * @param configName Config name
      * @param values Configuration values
      */
-    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName,
+    public static void writeConfiguration(
+            @NotNull SlingContextImpl context,
+            @NotNull String contextPath,
+            @NotNull String configName,
             @NotNull Map<String, Object> values) {
         ConfigurationPersistHelper helper = new ConfigurationPersistHelper(context, contextPath);
         helper.writeConfiguration(configName, values);
@@ -101,7 +111,11 @@ public final class MockContextAwareConfig {
      * @param configClass Configuration class
      * @param values Configuration values
      */
-    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, Class<?> configClass, @NotNull Object @NotNull ... values) {
+    public static void writeConfiguration(
+            @NotNull SlingContextImpl context,
+            @NotNull String contextPath,
+            Class<?> configClass,
+            @NotNull Object @NotNull ... values) {
         writeConfiguration(context, contextPath, getConfigurationName(configClass), values);
     }
 
@@ -113,7 +127,11 @@ public final class MockContextAwareConfig {
      * @param configName Config name
      * @param values Configuration values
      */
-    public static void writeConfiguration(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName, @NotNull Object @NotNull ... values) {
+    public static void writeConfiguration(
+            @NotNull SlingContextImpl context,
+            @NotNull String contextPath,
+            @NotNull String configName,
+            @NotNull Object @NotNull ... values) {
         writeConfiguration(context, contextPath, configName, MapUtil.toMap(values));
     }
 
@@ -125,7 +143,10 @@ public final class MockContextAwareConfig {
      * @param configClass Configuration class
      * @param values Configuration values
      */
-    public static void writeConfigurationCollection(@NotNull SlingContextImpl context, @NotNull String contextPath,  @NotNull Class<?> configClass,
+    public static void writeConfigurationCollection(
+            @NotNull SlingContextImpl context,
+            @NotNull String contextPath,
+            @NotNull Class<?> configClass,
             @NotNull Collection<@NotNull Map<String, Object>> values) {
         writeConfigurationCollection(context, contextPath, getConfigurationName(configClass), values);
     }
@@ -138,7 +159,10 @@ public final class MockContextAwareConfig {
      * @param configName Config name
      * @param values Configuration values
      */
-    public static void writeConfigurationCollection(@NotNull SlingContextImpl context, @NotNull String contextPath, @NotNull String configName,
+    public static void writeConfigurationCollection(
+            @NotNull SlingContextImpl context,
+            @NotNull String contextPath,
+            @NotNull String configName,
             @NotNull Collection<@NotNull Map<String, Object>> values) {
         ConfigurationPersistHelper helper = new ConfigurationPersistHelper(context, contextPath);
         helper.writeConfigurationCollection(configName, values);
@@ -152,5 +176,4 @@ public final class MockContextAwareConfig {
         }
         return configClass.getName();
     }
-
 }

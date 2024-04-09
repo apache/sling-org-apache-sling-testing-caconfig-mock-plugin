@@ -27,22 +27,20 @@ import java.util.TreeMap;
  */
 class ConfigurationDataParts {
 
-    private final Map<String,Object> values = new TreeMap<>();
-    private final Map<String,Map<String,Object>> maps = new TreeMap<>();
-    private final Map<String,Collection<Map<String,Object>>> collections = new TreeMap<>();
+    private final Map<String, Object> values = new TreeMap<>();
+    private final Map<String, Map<String, Object>> maps = new TreeMap<>();
+    private final Map<String, Collection<Map<String, Object>>> collections = new TreeMap<>();
 
     @SuppressWarnings("unchecked")
-    ConfigurationDataParts(Map<String,Object> input) {
+    ConfigurationDataParts(Map<String, Object> input) {
         for (Map.Entry<String, Object> entry : input.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value instanceof Map) {
-                maps.put(key, (Map)value);
-            }
-            else if (value instanceof Collection) {
-                collections.put(key, (Collection)value);
-            }
-            else {
+                maps.put(key, (Map) value);
+            } else if (value instanceof Collection) {
+                collections.put(key, (Collection) value);
+            } else {
                 values.put(key, value);
             }
         }
@@ -59,5 +57,4 @@ class ConfigurationDataParts {
     Map<String, Collection<Map<String, Object>>> getCollections() {
         return collections;
     }
-
 }

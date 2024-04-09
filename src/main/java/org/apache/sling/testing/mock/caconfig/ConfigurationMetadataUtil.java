@@ -18,8 +18,6 @@
  */
 package org.apache.sling.testing.mock.caconfig;
 
-import static org.apache.sling.caconfig.impl.ConfigurationNameConstants.CONFIGURATION_CLASSES_HEADER;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +47,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.reflections.Reflections;
 
+import static org.apache.sling.caconfig.impl.ConfigurationNameConstants.CONFIGURATION_CLASSES_HEADER;
+
 /**
  * Helper methods for registering Configuration annotation classes from the classpath.
  */
@@ -56,7 +56,8 @@ import org.reflections.Reflections;
 final class ConfigurationMetadataUtil {
 
     private static final @NotNull String @NotNull [] CONFIGURATION_CLASSES_FROM_MANIFEST;
-    private static final @NotNull ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES = new ConcurrentHashMap<>();
+    private static final @NotNull ConcurrentMap<String, List<Class>> CONFIGURATION_CLASSES_FOR_PACKAGES =
+            new ConcurrentHashMap<>();
 
     static {
         // scan classpath for configuration classes bundle header entries only once
@@ -76,7 +77,8 @@ final class ConfigurationMetadataUtil {
      * @param bundleContext Bundle context
      * @param classNames Java class names
      */
-    public static void registerAnnotationClasses(@NotNull BundleContext bundleContext, @NotNull String @NotNull ... classNames) {
+    public static void registerAnnotationClasses(
+            @NotNull BundleContext bundleContext, @NotNull String @NotNull ... classNames) {
         Bundle bundle = new RegisterConfigurationMetadataBundle(bundleContext, Bundle.ACTIVE, classNames);
         BundleEvent event = new BundleEvent(BundleEvent.STARTED, bundle);
         MockOsgi.sendBundleEvent(bundleContext, event);
@@ -87,7 +89,8 @@ final class ConfigurationMetadataUtil {
      * @param bundleContext Bundle context
      * @param classNames Java class names
      */
-    public static void registerAnnotationClasses(@NotNull BundleContext bundleContext, @NotNull Class @NotNull ... classes) {
+    public static void registerAnnotationClasses(
+            @NotNull BundleContext bundleContext, @NotNull Class @NotNull ... classes) {
         String[] classNames = new String[classes.length];
         for (int i = 0; i < classes.length; i++) {
             classNames[i] = classes[i].getName();
@@ -127,7 +130,6 @@ final class ConfigurationMetadataUtil {
         return classes;
     }
 
-
     private static class RegisterConfigurationMetadataBundle implements Bundle {
 
         private final BundleContext bundleContext;
@@ -153,7 +155,7 @@ final class ConfigurationMetadataUtil {
         }
 
         @Override
-        public Dictionary<String,String> getHeaders() {
+        public Dictionary<String, String> getHeaders() {
             Dictionary<String, String> headers = new Hashtable<>();
             headers.put(CONFIGURATION_CLASSES_HEADER, classNames);
             return headers;
@@ -240,7 +242,7 @@ final class ConfigurationMetadataUtil {
         }
 
         @Override
-        public Dictionary<String,String> getHeaders(String locale) {
+        public Dictionary<String, String> getHeaders(String locale) {
             return null;
         }
 
@@ -293,7 +295,5 @@ final class ConfigurationMetadataUtil {
         public File getDataFile(String filename) {
             return null;
         }
-
     }
-
 }

@@ -47,38 +47,42 @@ public final class ContextPlugins {
     /**
      * Context plugin for Sling Context-Aware Configuration.
      */
-    public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG = new AbstractContextPlugin<SlingContextImpl>() {
-        @Override
-        public void beforeSetUp(@NotNull SlingContextImpl context) throws Exception {
-            // register models injector and it's dependencies before setup, to ensure it is present
-            // before sling models are auto-detected from classpath
-            registerConfigurationResourceResolver(context);
-            registerConfigurationResolver(context);
-            registerConfigurationManagement(context);
-            registerModelsInjector(context);
-        }
-        @Override
-        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
-            registerConfigurationResourceResolverDefaultImpl(context);
-            registerConfigurationResolverDefaultImpl(context);
+    public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG =
+            new AbstractContextPlugin<SlingContextImpl>() {
+                @Override
+                public void beforeSetUp(@NotNull SlingContextImpl context) throws Exception {
+                    // register models injector and it's dependencies before setup, to ensure it is present
+                    // before sling models are auto-detected from classpath
+                    registerConfigurationResourceResolver(context);
+                    registerConfigurationResolver(context);
+                    registerConfigurationManagement(context);
+                    registerModelsInjector(context);
+                }
 
-            // Scan MANIFEST.MF in the classpath and automatically register all Configuration annotation classes found.
-            ConfigurationMetadataUtil.addAnnotationClassesForManifestEntries(context.bundleContext());
-        }
-    };
+                @Override
+                public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
+                    registerConfigurationResourceResolverDefaultImpl(context);
+                    registerConfigurationResolverDefaultImpl(context);
+
+                    // Scan MANIFEST.MF in the classpath and automatically register all Configuration annotation classes
+                    // found.
+                    ConfigurationMetadataUtil.addAnnotationClassesForManifestEntries(context.bundleContext());
+                }
+            };
 
     /**
      * Context plugin for Sling Context-Aware Configuration (without the default implementations).
      */
-    public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG_NODEF = new AbstractContextPlugin<SlingContextImpl>() {
-        @Override
-        public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
-            registerConfigurationResourceResolver(context);
-            registerConfigurationResolver(context);
-            registerConfigurationManagement(context);
-            registerModelsInjector(context);
-        }
-    };
+    public static final @NotNull ContextPlugin<? extends SlingContextImpl> CACONFIG_NODEF =
+            new AbstractContextPlugin<SlingContextImpl>() {
+                @Override
+                public void afterSetUp(@NotNull SlingContextImpl context) throws Exception {
+                    registerConfigurationResourceResolver(context);
+                    registerConfigurationResolver(context);
+                    registerConfigurationManagement(context);
+                    registerModelsInjector(context);
+                }
+            };
 
     /**
      * Register all services for ConfigurationResourceResolver (without the default implementations).
@@ -88,9 +92,13 @@ public final class ContextPlugins {
 
         context.registerInjectActivateService(new ContextPathStrategyMultiplexerImpl());
 
-        if (!registerByClassName(context, "org.apache.sling.caconfig.resource.impl.ConfigurationResourceResolvingStrategyMultiplexerImpl")) {
+        if (!registerByClassName(
+                context,
+                "org.apache.sling.caconfig.resource.impl.ConfigurationResourceResolvingStrategyMultiplexerImpl")) {
             // fallback to impl 1.2
-            registerByClassName(context, "org.apache.sling.caconfig.resource.impl.ConfigurationResourceResolvingStrategyMultiplexer");
+            registerByClassName(
+                    context,
+                    "org.apache.sling.caconfig.resource.impl.ConfigurationResourceResolvingStrategyMultiplexer");
         }
 
         context.registerInjectActivateService(new ConfigurationResourceResolverImpl());
@@ -112,25 +120,31 @@ public final class ContextPlugins {
     private static void registerConfigurationResolver(SlingContextImpl context) {
         registerByClassName(context, "org.apache.sling.caconfig.management.impl.ConfigurationManagementSettingsImpl");
 
-        if (!registerByClassName(context, "org.apache.sling.caconfig.management.impl.ConfigurationPersistenceStrategyMultiplexerImpl")) {
+        if (!registerByClassName(
+                context, "org.apache.sling.caconfig.management.impl.ConfigurationPersistenceStrategyMultiplexerImpl")) {
             // fallback to impl 1.2
-            registerByClassName(context, "org.apache.sling.caconfig.management.impl.ConfigurationPersistenceStrategyMultiplexer");
+            registerByClassName(
+                    context, "org.apache.sling.caconfig.management.impl.ConfigurationPersistenceStrategyMultiplexer");
         }
 
         // only required for impl 1.3+
         registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationPersistenceStrategyBridge");
 
-        if (!registerByClassName(context, "org.apache.sling.caconfig.impl.metadata.ConfigurationMetadataProviderMultiplexerImpl")) {
+        if (!registerByClassName(
+                context, "org.apache.sling.caconfig.impl.metadata.ConfigurationMetadataProviderMultiplexerImpl")) {
             // fallback to impl 1.2
-            registerByClassName(context, "org.apache.sling.caconfig.impl.metadata.ConfigurationMetadataProviderMultiplexer");
+            registerByClassName(
+                    context, "org.apache.sling.caconfig.impl.metadata.ConfigurationMetadataProviderMultiplexer");
         }
 
-        if (!registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInheritanceStrategyMultiplexerImpl")) {
+        if (!registerByClassName(
+                context, "org.apache.sling.caconfig.impl.ConfigurationInheritanceStrategyMultiplexerImpl")) {
             // fallback to impl 1.2 (not existing in 1.1 or below)
             registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInheritanceStrategyMultiplexer");
         }
 
-        if (!registerByClassName(context, "org.apache.sling.caconfig.impl.override.ConfigurationOverrideMultiplexerImpl")) {
+        if (!registerByClassName(
+                context, "org.apache.sling.caconfig.impl.override.ConfigurationOverrideMultiplexerImpl")) {
             // fallback to impl 1.2 (not existing in 1.1 or below)
             registerByClassName(context, "org.apache.sling.caconfig.impl.override.ConfigurationOverrideManager");
         }
@@ -147,10 +161,11 @@ public final class ContextPlugins {
         context.registerInjectActivateService(new DefaultConfigurationPersistenceStrategy());
 
         // only required for impl 1.2+
-        registerByClassName(context,"org.apache.sling.caconfig.impl.def.DefaultConfigurationInheritanceStrategy");
+        registerByClassName(context, "org.apache.sling.caconfig.impl.def.DefaultConfigurationInheritanceStrategy");
 
         // required for impl 1.6+
-        registerByClassName(context, "org.apache.sling.caconfig.impl.def.DefaultConfigurationInjectResourceDetectionStrategy");
+        registerByClassName(
+                context, "org.apache.sling.caconfig.impl.def.DefaultConfigurationInjectResourceDetectionStrategy");
     }
 
     private static void registerConfigurationManagement(SlingContextImpl context) {
@@ -158,12 +173,14 @@ public final class ContextPlugins {
         context.registerInjectActivateService(new AnnotationClassConfigurationMetadataProvider());
 
         // required for impl 1.6
-        registerByClassName(context, "org.apache.sling.caconfig.impl.ConfigurationInjectResourceDetectionStrategyMultiplexerImpl");
+        registerByClassName(
+                context, "org.apache.sling.caconfig.impl.ConfigurationInjectResourceDetectionStrategyMultiplexerImpl");
     }
 
     private static void registerModelsInjector(SlingContextImpl context) {
         // required for impl 1.6
-        registerByClassName(context, "org.apache.sling.models.caconfig.impl.injectors.ContextAwareConfigurationInjector");
+        registerByClassName(
+                context, "org.apache.sling.models.caconfig.impl.injectors.ContextAwareConfigurationInjector");
     }
 
     @SuppressWarnings("null")
@@ -172,17 +189,12 @@ public final class ContextPlugins {
             Class<?> clazz = Class.forName(className);
             context.registerInjectActivateService(clazz.newInstance());
             return true;
-        }
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             return false;
-        }
-        catch (InstantiationException ex) {
+        } catch (InstantiationException ex) {
+            throw new RuntimeException(ex);
+        } catch (IllegalAccessException ex) {
             throw new RuntimeException(ex);
         }
-        catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-
     }
-
 }

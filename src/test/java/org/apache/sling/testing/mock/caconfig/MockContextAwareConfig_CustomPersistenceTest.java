@@ -28,10 +28,12 @@ public class MockContextAwareConfig_CustomPersistenceTest extends MockContextAwa
     @Override
     @Before
     public void setUp() {
-        context.registerService(ConfigurationPersistenceStrategy2.class, new CustomConfigurationPersistenceStrategy(),
-                Constants.SERVICE_RANKING, 2000);
+        context.registerService(
+                ConfigurationPersistenceStrategy2.class,
+                new CustomConfigurationPersistenceStrategy(),
+                Constants.SERVICE_RANKING,
+                2000);
 
         super.setUp();
     }
-
 }

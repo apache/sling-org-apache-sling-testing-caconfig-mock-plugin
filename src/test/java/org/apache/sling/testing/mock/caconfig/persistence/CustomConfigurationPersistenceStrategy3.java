@@ -18,8 +18,6 @@
  */
 package org.apache.sling.testing.mock.caconfig.persistence;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -39,6 +37,8 @@ import org.apache.sling.caconfig.spi.ConfigurationPersistenceStrategy2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * This is a variant of {@link org.apache.sling.caconfig.impl.def.DefaultConfigurationPersistenceStrategy}
  * which reads and stores data from a sub-resources named "jcr:content".
@@ -51,7 +51,8 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
 
     private static final String DEFAULT_RESOURCE_TYPE = JcrConstants.NT_UNSTRUCTURED;
     private static final String CHILD_NODE_NAME = JcrConstants.JCR_CONTENT;
-    private static final Pattern JCR_CONTENT_PATTERN = Pattern.compile("(.*/)?" + Pattern.quote(CHILD_NODE_NAME) + "(/.*)?");
+    private static final Pattern JCR_CONTENT_PATTERN =
+            Pattern.compile("(.*/)?" + Pattern.quote(CHILD_NODE_NAME) + "(/.*)?");
 
     @Override
     public Resource getResource(@NotNull Resource resource) {
@@ -114,7 +115,9 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
     }
 
     @Override
-    public boolean persistConfiguration(@NotNull ResourceResolver resourceResolver, @NotNull String configResourcePath,
+    public boolean persistConfiguration(
+            @NotNull ResourceResolver resourceResolver,
+            @NotNull String configResourcePath,
             @NotNull ConfigurationPersistData data) {
         getOrCreateResource(resourceResolver, getResourcePath(configResourcePath), data.getProperties());
         commit(resourceResolver);
@@ -122,7 +125,9 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
     }
 
     @Override
-    public boolean persistConfigurationCollection(@NotNull ResourceResolver resourceResolver, @NotNull String configResourceCollectionParentPath,
+    public boolean persistConfigurationCollection(
+            @NotNull ResourceResolver resourceResolver,
+            @NotNull String configResourceCollectionParentPath,
             @NotNull ConfigurationCollectionPersistData data) {
         String parentPath = getCollectionParentResourcePath(configResourceCollectionParentPath);
         Resource configResourceParent = getOrCreateResource(resourceResolver, parentPath, ValueMap.EMPTY);
@@ -130,13 +135,15 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
         // delete existing children and create new ones
         deleteChildren(configResourceParent);
         for (ConfigurationPersistData item : data.getItems()) {
-            String path = getCollectionItemResourcePath(configResourceParent.getPath() + "/" + item.getCollectionItemName());
+            String path =
+                    getCollectionItemResourcePath(configResourceParent.getPath() + "/" + item.getCollectionItemName());
             getOrCreateResource(resourceResolver, path, item.getProperties());
         }
 
         // if resource collection parent properties are given replace them as well
         if (data.getProperties() != null) {
-            Resource propsResource = getOrCreateResource(resourceResolver, parentPath + "/colPropsResource", ValueMap.EMPTY);
+            Resource propsResource =
+                    getOrCreateResource(resourceResolver, parentPath + "/colPropsResource", ValueMap.EMPTY);
             replaceProperties(propsResource, data.getProperties());
         }
 
@@ -150,22 +157,23 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
         if (resource != null) {
             try {
                 resourceResolver.delete(resource);
-            }
-            catch (PersistenceException ex) {
-                throw new ConfigurationPersistenceException("Unable to delete configuration at " + configResourcePath, ex);
+            } catch (PersistenceException ex) {
+                throw new ConfigurationPersistenceException(
+                        "Unable to delete configuration at " + configResourcePath, ex);
             }
         }
         commit(resourceResolver);
         return true;
     }
 
-    private Resource getOrCreateResource(ResourceResolver resourceResolver, String path, Map<String,Object> properties) {
+    private Resource getOrCreateResource(
+            ResourceResolver resourceResolver, String path, Map<String, Object> properties) {
         try {
-            Resource resource = ResourceUtil.getOrCreateResource(resourceResolver, path, DEFAULT_RESOURCE_TYPE, DEFAULT_RESOURCE_TYPE, false);
+            Resource resource = ResourceUtil.getOrCreateResource(
+                    resourceResolver, path, DEFAULT_RESOURCE_TYPE, DEFAULT_RESOURCE_TYPE, false);
             replaceProperties(resource, properties);
             return resource;
-        }
-        catch (PersistenceException ex) {
+        } catch (PersistenceException ex) {
             throw new ConfigurationPersistenceException("Unable to persist configuration to " + path, ex);
         }
     }
@@ -176,14 +184,13 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
             for (Resource child : resource.getChildren()) {
                 resourceResolver.delete(child);
             }
-        }
-        catch (PersistenceException ex) {
+        } catch (PersistenceException ex) {
             throw new ConfigurationPersistenceException("Unable to remove children from " + resource.getPath(), ex);
         }
     }
 
     @SuppressWarnings("null")
-    private void replaceProperties(Resource resource, Map<String,Object> properties) {
+    private void replaceProperties(Resource resource, Map<String, Object> properties) {
         ModifiableValueMap modValueMap = resource.adaptTo(ModifiableValueMap.class);
         // remove all existing properties that do not have jcr: namespace
         for (String propertyName : new HashSet<>(modValueMap.keySet())) {
@@ -198,8 +205,7 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
     private void commit(ResourceResolver resourceResolver) {
         try {
             resourceResolver.commit();
-        }
-        catch (PersistenceException ex) {
+        } catch (PersistenceException ex) {
             throw new ConfigurationPersistenceException("Unable to save configuration: " + ex.getMessage(), ex);
         }
     }
@@ -207,5 +213,4 @@ public class CustomConfigurationPersistenceStrategy3 implements ConfigurationPer
     static boolean containsJcrContent(String path) {
         return JCR_CONTENT_PATTERN.matcher(path).matches();
     }
-
 }

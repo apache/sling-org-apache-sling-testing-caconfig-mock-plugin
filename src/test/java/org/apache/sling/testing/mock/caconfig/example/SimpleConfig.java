@@ -28,5 +28,4 @@ public @interface SimpleConfig {
     int intParam() default 5;
 
     boolean boolParam();
-
 }
