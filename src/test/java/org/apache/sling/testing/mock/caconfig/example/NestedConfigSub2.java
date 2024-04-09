@@ -23,10 +23,9 @@ package org.apache.sling.testing.mock.caconfig.example;
  */
 public @interface NestedConfigSub2 {
 
-  String sub2StringParam();
+    String sub2StringParam();
 
-  NestedConfigSub sub();
+    NestedConfigSub sub();
 
-  NestedConfigSub[] subList();
-
+    NestedConfigSub[] subList();
 }

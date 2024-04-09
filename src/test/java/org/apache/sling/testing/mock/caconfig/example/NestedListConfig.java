@@ -26,12 +26,11 @@ import org.apache.sling.caconfig.annotation.Configuration;
 @Configuration(collection = true)
 public @interface NestedListConfig {
 
-  String stringParam();
+    String stringParam();
 
-  NestedConfigSub[] sub();
+    NestedConfigSub[] sub();
 
-  NestedConfigSub2 sub2();
+    NestedConfigSub2 sub2();
 
-  NestedConfigSub2[] sub2List();
-
+    NestedConfigSub2[] sub2List();
 }

@@ -23,12 +23,9 @@ package org.apache.sling.testing.mock.caconfig.example;
  */
 public @interface NestedConfigSub {
 
-  String subStringParam();
+    String subStringParam();
 
-  int intParam();
+    int intParam();
 
-  String[] stringArrayParam() default {
-      "value1", "value2"
-  };
-
+    String[] stringArrayParam() default {"value1", "value2"};
 }

@@ -64,14 +64,17 @@ class ConfigurationPersistHelper {
     void writeConfiguration(@NotNull String configName, @NotNull Map<String, Object> values) {
         // write properties of main configuration
         ConfigurationDataParts parts = new ConfigurationDataParts(values);
-        configManager.persistConfiguration(contextResource, configName, new ConfigurationPersistData(parts.getValues()));
+        configManager.persistConfiguration(
+                contextResource, configName, new ConfigurationPersistData(parts.getValues()));
 
         // write nested configuration and nested configuration collections
-        for (Map.Entry<String,Map<String,Object>> nestedMap : parts.getMaps().entrySet()) {
+        for (Map.Entry<String, Map<String, Object>> nestedMap : parts.getMaps().entrySet()) {
             writeConfiguration(getNestedConfigName(configName, nestedMap.getKey()), nestedMap.getValue());
         }
-        for (Map.Entry<String,Collection<Map<String,Object>>> nestedCollection : parts.getCollections().entrySet()) {
-            writeConfigurationCollection(getNestedConfigName(configName, nestedCollection.getKey()), nestedCollection.getValue());
+        for (Map.Entry<String, Collection<Map<String, Object>>> nestedCollection :
+                parts.getCollections().entrySet()) {
+            writeConfigurationCollection(
+                    getNestedConfigName(configName, nestedCollection.getKey()), nestedCollection.getValue());
         }
     }
 
@@ -80,7 +83,8 @@ class ConfigurationPersistHelper {
      * @param configName Config name
      * @param values Configuration values
      */
-    void writeConfigurationCollection(@NotNull String configName, @NotNull Collection<@NotNull Map<String, Object>> values) {
+    void writeConfigurationCollection(
+            @NotNull String configName, @NotNull Collection<@NotNull Map<String, Object>> values) {
         // split each collection item map in it's parts
         Map<String, ConfigurationDataParts> partsCollection = new LinkedHashMap<>();
         int index = 0;
@@ -90,20 +94,27 @@ class ConfigurationPersistHelper {
 
         // write properties of main configuration collection
         List<ConfigurationPersistData> items = partsCollection.entrySet().stream()
-                .map(entry -> new ConfigurationPersistData(entry.getValue().getValues()).collectionItemName(entry.getKey()))
+                .map(entry ->
+                        new ConfigurationPersistData(entry.getValue().getValues()).collectionItemName(entry.getKey()))
                 .collect(Collectors.toList());
-        configManager.persistConfigurationCollection(contextResource, configName,
-                new ConfigurationCollectionPersistData(items));
+        configManager.persistConfigurationCollection(
+                contextResource, configName, new ConfigurationCollectionPersistData(items));
 
         // write nested configuration and nested configuration collections
         for (Map.Entry<String, ConfigurationDataParts> entry : partsCollection.entrySet()) {
             String itemName = entry.getKey();
             ConfigurationDataParts parts = entry.getValue();
-            for (Map.Entry<String,Map<String,Object>> nestedMap : parts.getMaps().entrySet()) {
-                writeConfiguration(getNestedCollectionItemConfigName(configName, itemName, nestedMap.getKey()), nestedMap.getValue());
+            for (Map.Entry<String, Map<String, Object>> nestedMap :
+                    parts.getMaps().entrySet()) {
+                writeConfiguration(
+                        getNestedCollectionItemConfigName(configName, itemName, nestedMap.getKey()),
+                        nestedMap.getValue());
             }
-            for (Map.Entry<String,Collection<Map<String,Object>>> nestedCollection : parts.getCollections().entrySet()) {
-                writeConfigurationCollection(getNestedCollectionItemConfigName(configName, itemName, nestedCollection.getKey()), nestedCollection.getValue());
+            for (Map.Entry<String, Collection<Map<String, Object>>> nestedCollection :
+                    parts.getCollections().entrySet()) {
+                writeConfigurationCollection(
+                        getNestedCollectionItemConfigName(configName, itemName, nestedCollection.getKey()),
+                        nestedCollection.getValue());
             }
         }
     }
@@ -113,19 +124,21 @@ class ConfigurationPersistHelper {
     }
 
     private String getCollectionParentConfigName(@NotNull String configName) {
-        return StringUtils.defaultString(configurationPersistenceStrategy.getCollectionParentConfigName(configName, null), configName);
+        return StringUtils.defaultString(
+                configurationPersistenceStrategy.getCollectionParentConfigName(configName, null), configName);
     }
 
     private String getCollectionItemConfigName(@NotNull String configName) {
-        return StringUtils.defaultString(configurationPersistenceStrategy.getCollectionItemConfigName(configName, null), configName);
+        return StringUtils.defaultString(
+                configurationPersistenceStrategy.getCollectionItemConfigName(configName, null), configName);
     }
 
     private String getNestedConfigName(@NotNull String configName, @NotNull String key) {
         return getConfigName(configName) + "/" + key;
     }
 
-    private String getNestedCollectionItemConfigName(@NotNull String configName, @NotNull String itemName, @NotNull String key) {
+    private String getNestedCollectionItemConfigName(
+            @NotNull String configName, @NotNull String itemName, @NotNull String key) {
         return getCollectionItemConfigName(getCollectionParentConfigName(configName) + "/" + itemName) + "/" + key;
     }
-
 }
