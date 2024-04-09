@@ -23,13 +23,13 @@
     <parent>
         <groupId>org.apache.sling</groupId>
         <artifactId>sling-bundle-parent</artifactId>
-        <version>52</version>
+        <version>60</version>
         <relativePath />
     </parent>
 
     <artifactId>org.apache.sling.testing.caconfig-mock-plugin</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.5-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
     <name>Apache Sling Context-Aware Configuration Mock Plugin</name>
     <description>Mock Context Plugin for Apache Sling Context-Aware Configuration</description>
 
